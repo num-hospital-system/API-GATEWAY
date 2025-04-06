@@ -9,7 +9,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -27,10 +26,10 @@ public class SecurityConfig {
 
         http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .cors(corsSpec -> corsSpec.configurationSource(source)) // Use the simplified source
+            .cors(corsSpec -> corsSpec.configurationSource(source))
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
-                .pathMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .pathMatchers("/api/auth/login", "/api/auth/register" , "/api/auth/users" , "/api/auth/update-roles" , "/api/auth/add-role" , "/api/auth/remove-role" , "/api/auth/users/{userId}").permitAll()
                 .pathMatchers("/api/authorization/**").permitAll()
                 .pathMatchers("/api/**").authenticated()
                 .anyExchange().permitAll()

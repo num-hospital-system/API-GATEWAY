@@ -23,10 +23,11 @@ public class RouteConfig {
         return builder.routes()
                 .route("auth-service", r -> r
                         .path("/api/auth/**")
-                        .filters(f -> f.stripPrefix(1))
+                        .filters(f -> f.stripPrefix(1)
+                        .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("http://localhost:8081"))
                 .route("authorization-service", r -> r
-                        .path("/api/authorization/**")
+                .path("/api/authorization/**")
                         .filters(f -> f
                                 .stripPrefix(1)
                                 .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))

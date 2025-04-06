@@ -19,8 +19,8 @@ import reactor.core.publisher.Mono;
 import javax.crypto.SecretKey;
 import java.util.List;
 
-@Component
 @Slf4j
+@Component
 public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
     @Value("${jwt.secret}")
@@ -35,68 +35,87 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-            log.info("Шалгаж буй зам: {}", request.getURI().getPath());
+            String path = request.getURI().getPath();
+            log.info("==== ШАЛГАЖ БУЙ ЗАМ: {} ====", path);
 
-            // Бүртгэлийн хүсэлтийг шүүлтээс хасах
-            if (request.getURI().getPath().contains("/api/auth/login") ||
-                request.getURI().getPath().contains("/api/auth/register")) {
-                log.info("Нэвтрэх/бүртгүүлэх замыг алгасаж байна.");
+            // Нэвтрэх болон бүртгүүлэх хүсэлтүүдийг шалгахгүй алгасах
+            // /auth/login эсвэл /api/auth/login гэсэн хоёр замын аль нэгийг нь шалгана
+            if (path.endsWith("/auth/login") || 
+                path.endsWith("/auth/register") ||
+                path.endsWith("/api/auth/login") || 
+                path.endsWith("/api/auth/register")) {
+                log.info("Нэвтрэх/Бүртгүүлэх зам учир JWT шалгахгүй алгасаж байна: {}", path);
                 return chain.filter(exchange);
             }
-            
-            log.info("JWT шүүлтүүр ажиллаж байна...");
 
-            // JWT токен байгаа эсэхийг шалгах
-            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED, "Authorization header олдсонгүй");
-            }
+            log.info("JWT шүүлтүүр эхэллээ...");
 
+            // JWT токен шалгах
             String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            log.info("Authorization header: {}", authHeader);
+
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                log.warn("Bearer token олдсонгүй эсвэл буруу формат");
                 return onError(exchange, HttpStatus.UNAUTHORIZED, "JWT токен олдсонгүй");
             }
 
             String jwt = authHeader.substring(7);
-            if (!isValidToken(jwt)) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED, "JWT токен хүчингүй байна");
-            }
+            log.info("JWT токен олдлоо: {}", jwt.substring(0, Math.min(10, jwt.length())) + "...");
 
-            // Хэрэглэгчийн мэдээллийг header-т нэмэх
-            Claims claims = extractClaims(jwt);
-            String userId = claims.getSubject();
-            List<String> roles = claims.get("roles", List.class);
-            log.info("Токеноос салгасан ролууд: {}", roles);
+            try {
+                // JWT-г decode хийж claims авах
+                Claims claims = extractClaims(jwt);
+                String userId = claims.getSubject();
+                List<String> roles = claims.get("roles", List.class);
 
-            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                if (roles == null) {
+                    roles = List.of();
+                }
+
+                log.info("JWT мэдээлэл:");
+                log.info("User ID: {}", userId);
+                log.info("Roles: {}", roles);
+
+                // Шинэ header-үүд нэмэх
+                ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                    .header(HttpHeaders.AUTHORIZATION, authHeader)  // Оригинал JWT-г үлдээх
                     .header("X-User-ID", userId)
-                    .header("X-User-Roles", String.join(",", roles != null ? roles : List.of()))
+                    .header("X-User-Roles", String.join(",", roles))
                     .build();
 
-            log.info("Дамжуулж буй header: X-User-ID={}, X-User-Roles={}", userId, String.join(",", roles != null ? roles : List.of()));
+                return chain.filter(exchange.mutate().request(modifiedRequest).build());
 
-            return chain.filter(exchange.mutate().request(modifiedRequest).build());
+            } catch (Exception e) {
+                log.error("JWT боловсруулахад алдаа гарлаа: {}", e.getMessage());
+                return onError(exchange, HttpStatus.UNAUTHORIZED, "JWT токен хүчингүй байна");
+            }
         };
     }
 
-    private boolean isValidToken(String jwt) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(jwt);
-            return true;
-        } catch (JwtException e) {
-            log.error("JWT токен шалгахад алдаа гарлаа: {}", e.getMessage());
-            return false;
-        }
-    }
+    // private boolean isValidToken(String jwt) {
+    //     try {
+    //         Jwts.parserBuilder()
+    //                 .setSigningKey(getSigningKey())
+    //                 .build()
+    //                 .parseClaimsJws(jwt);
+    //         return true;
+    //     } catch (JwtException e) {
+    //         log.error("JWT токен шалгахад алдаа гарлаа: {}", e.getMessage());
+    //         return false;
+    //     }
+    // }
 
     private Claims extractClaims(String jwt) {
-        return Jwts.parserBuilder()
+        try {
+            return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(jwt)
                 .getBody();
+        } catch (Exception e) {
+            log.error("JWT claims задлахад алдаа: {}", e.getMessage());
+            throw e;
+        }
     }
 
     private SecretKey getSigningKey() {
