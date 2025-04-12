@@ -1,7 +1,6 @@
 package com.example.apigateway.filter;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -41,10 +40,9 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             // Нэвтрэх болон бүртгүүлэх хүсэлтүүдийг шалгахгүй алгасах
             // /auth/login эсвэл /api/auth/login гэсэн хоёр замын аль нэгийг нь шалгана
             if (path.endsWith("/auth/login") || 
-                path.endsWith("/auth/register") ||
-                path.endsWith("/api/auth/login") || 
-                path.endsWith("/api/auth/register")) {
-                log.info("Нэвтрэх/Бүртгүүлэх зам учир JWT шалгахгүй алгасаж байна: {}", path);
+                path.endsWith("/auth/register") 
+                ) {
+                log.info("Нэвтрэх/Бүртгүүлэх эсвэл хэрэглэгчийн дэлгэрэнгүй зам учир JWT шалгахгүй алгасаж байна: {}", path);
                 return chain.filter(exchange);
             }
 

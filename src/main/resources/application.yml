@@ -38,10 +38,18 @@ spring:
 
       routes:
         - id: auth-service
-          # uri: http://localhost:8081 
-          uri: http://52.77.99.18:8081 
+          uri: http://localhost:8081 
+          # uri: http://52.77.99.18:8081 
           predicates:
             - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthenticationFilter
+
+        - id: user_detail_register
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/user-details/**
           filters:
             - StripPrefix=1
             - JwtAuthenticationFilter
@@ -53,8 +61,6 @@ spring:
         #   filters:
         #     - StripPrefix=1
         #     - JwtAuthenticationFilter
-
-
 eureka:
   client:
     enabled: false
