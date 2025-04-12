@@ -26,12 +26,12 @@ public class RouteConfig {
                         .filters(f -> f.stripPrefix(1)
                         .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("http://52.77.99.18:8081"))
-                .route("authorization-service", r -> r
-                .path("/api/authorization/**")
-                        .filters(f -> f
-                                .stripPrefix(1)
-                                .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
-                        .uri("http://52.77.99.18:8082"))
+                // .route("authorization-service", r -> r
+                // .path("/api/authorization/**")
+                //         .filters(f -> f
+                //                 .stripPrefix(1)
+                //                 .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
+                //         .uri("http://52.77.99.18:8082"))
                 .build();
     }
-} 
+}

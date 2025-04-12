@@ -29,8 +29,7 @@ public class SecurityConfig {
             .cors(corsSpec -> corsSpec.configurationSource(source))
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
-                .pathMatchers("/api/auth/login", "/api/auth/register" , "/api/auth/users" , "/api/auth/update-roles" , "/api/auth/add-role" , "/api/auth/remove-role" , "/api/auth/users/{userId}").permitAll()
-                .pathMatchers("/api/authorization/**").permitAll()
+                .pathMatchers("/api/auth/**").permitAll()
                 .pathMatchers("/api/**").authenticated()
                 .anyExchange().permitAll()
             )

@@ -63,7 +63,6 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             log.info("JWT токен олдлоо: {}", jwt.substring(0, Math.min(10, jwt.length())) + "...");
 
             try {
-                // JWT-г decode хийж claims авах
                 Claims claims = extractClaims(jwt);
                 String userId = claims.getSubject();
                 List<String> roles = claims.get("roles", List.class);
@@ -76,9 +75,8 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                 log.info("User ID: {}", userId);
                 log.info("Roles: {}", roles);
 
-                // Шинэ header-үүд нэмэх
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                    .header(HttpHeaders.AUTHORIZATION, authHeader)  // Оригинал JWT-г үлдээх
+                    .header(HttpHeaders.AUTHORIZATION, authHeader) 
                     .header("X-User-ID", userId)
                     .header("X-User-Roles", String.join(",", roles))
                     .build();
