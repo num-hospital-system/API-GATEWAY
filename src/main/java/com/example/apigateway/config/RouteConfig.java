@@ -1,4 +1,4 @@
-package com.example.apigateway.config; // Uncommented package declaration
+package com.example.apigateway.config;
 
 import com.example.apigateway.filter.JwtAuthenticationFilter;
 import org.slf4j.Logger;
@@ -8,7 +8,6 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 @Configuration
 public class RouteConfig {
 
@@ -32,6 +31,7 @@ public class RouteConfig {
                         .filters(f -> f.stripPrefix(1)
                         .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("http://localhost:8083"))
+
                 // .route("authorization-service", r -> r
                 // .path("/api/authorization/**")
                 //         .filters(f -> f
