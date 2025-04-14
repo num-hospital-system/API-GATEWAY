@@ -37,8 +37,6 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             String path = request.getURI().getPath();
             log.info("==== ШАЛГАЖ БУЙ ЗАМ: {} ====", path);
 
-            // Нэвтрэх болон бүртгүүлэх хүсэлтүүдийг шалгахгүй алгасах
-            // /auth/login эсвэл /api/auth/login гэсэн хоёр замын аль нэгийг нь шалгана
             if (path.endsWith("/auth/login") || 
                 path.endsWith("/auth/register") 
                 ) {
@@ -88,19 +86,6 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
         };
     }
 
-    // private boolean isValidToken(String jwt) {
-    //     try {
-    //         Jwts.parserBuilder()
-    //                 .setSigningKey(getSigningKey())
-    //                 .build()
-    //                 .parseClaimsJws(jwt);
-    //         return true;
-    //     } catch (JwtException e) {
-    //         log.error("JWT токен шалгахад алдаа гарлаа: {}", e.getMessage());
-    //         return false;
-    //     }
-    // }
-
     private Claims extractClaims(String jwt) {
         try {
             return Jwts.parserBuilder()
@@ -125,6 +110,5 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
     }
 
     public static class Config {
-        // Тохиргооны параметрүүд
     }
 } 
