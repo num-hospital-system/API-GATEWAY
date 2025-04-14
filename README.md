@@ -189,3 +189,4 @@ Content-Type: application/json
 
 ### Нэмэлт
  - Хэрвээ user хэсэг ашиглах бол үүнийг татан user_detail_register service-г ажилуулах https://github.com/num-hospital-system/num_auth.git
+ - ### Мөн gateway ашигласан бодит жишээ user_detail_register service дотор байгаа шүү GL
