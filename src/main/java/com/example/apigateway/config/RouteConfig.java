@@ -24,8 +24,8 @@ public class RouteConfig {
                         .path("/api/auth/**")
                         .filters(f -> f.stripPrefix(1)
                         .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
-                        // .uri("http://52.77.99.18:8081"))
-                        .uri("http://localhost:8081"))
+                        .uri("http://52.77.99.18:8081"))
+                        // .uri("http://localhost:8081"))
                 .route("user_detail_register", r -> r
                         .path("/api/user-details/**")
                         .filters(f -> f.stripPrefix(1)
