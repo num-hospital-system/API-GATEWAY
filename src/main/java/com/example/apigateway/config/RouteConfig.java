@@ -24,14 +24,15 @@ public class RouteConfig {
                         .path("/api/auth/**")
                         .filters(f -> f.stripPrefix(1)
                         .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
-                        .uri("http://52.77.99.18:8081"))
                         // .uri("http://localhost:8081"))
-                .route("user_detail_register", r -> r
+                        .uri("http://52.77.99.18:8081"))
+// ҮҮНИЙГ АШИГЛАХ БОЛ https://github.com/num-hospital-system/num_auth.git ҮҮНИЙ user_detail_register-г ./mvnw spring-boot:run гээд ажиллуулаарай
+// ҮҮНИЙГ АШИГЛАХ БОЛ https://github.com/num-hospital-system/num_auth.git ҮҮНИЙ user_detail_register-г ./mvnw spring-boot:run гээд ажиллуулаарай
+                .route("user_detail_register", r -> r 
                         .path("/api/user-details/**")
                         .filters(f -> f.stripPrefix(1)
                         .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("http://localhost:8083"))
-
 
                 // .route("authorization-service", r -> r
                 // .path("/api/authorization/**")
