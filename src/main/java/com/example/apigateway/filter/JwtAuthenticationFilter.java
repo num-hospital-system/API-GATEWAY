@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             log.info("==== ШАЛГАЖ БУЙ ЗАМ: {} ====", path);
 
             if (path.endsWith("/auth/login") || 
-                path.endsWith("/auth/register") 
+                path.endsWith("/auth/register")
                 ) {
                 log.info("Нэвтрэх/Бүртгүүлэх эсвэл хэрэглэгчийн дэлгэрэнгүй зам учир JWT шалгахгүй алгасаж байна: {}", path);
                 return chain.filter(exchange);

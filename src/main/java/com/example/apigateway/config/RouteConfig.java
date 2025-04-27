@@ -33,7 +33,6 @@ public class RouteConfig {
                         .filters(f -> f.stripPrefix(1)
                         .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("http://localhost:8083"))
-
                 // .route("authorization-service", r -> r
                 // .path("/api/authorization/**")
                 //         .filters(f -> f
