@@ -33,6 +33,12 @@ public class RouteConfig {
                         .filters(f -> f.stripPrefix(1)
                         .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("http://localhost:8083"))
+                // Add route for ExaminationService
+                .route("ExaminationService", r -> r
+                        .path("/api/examination/**" , "/api/examination/diagnosis/**" , "/api/examination/prescriptions/**" , "/api/examination/survey/**" , "/api/examination/instruction/**")
+                        .filters(f -> f
+                        .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
+                        .uri("http://localhost:8084"))
                 // .route("authorization-service", r -> r
                 // .path("/api/authorization/**")
                 //         .filters(f -> f

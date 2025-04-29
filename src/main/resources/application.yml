@@ -51,6 +51,14 @@ spring:
           filters:
             - StripPrefix=1
             - JwtAuthenticationFilter
+
+        - id: ExaminationService
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/examination/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthenticationFilter
 eureka:
   client:
     enabled: false
