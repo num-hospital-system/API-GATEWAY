@@ -59,6 +59,13 @@ spring:
           filters:
             - StripPrefix=1
             - JwtAuthenticationFilter
+        - id: customer_registration
+          uri: http://54.251.178.246:8080
+          predicates:
+            - Path=/api/customer/registration/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthenticationFilter
 eureka:
   client:
     enabled: false
