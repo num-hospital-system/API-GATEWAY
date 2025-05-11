@@ -45,6 +45,12 @@ public class RouteConfig {
                 //                 .stripPrefix(1)
                 //                 .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
                 //         .uri("http://52.77.99.18:8082"))
+                .route("userapi", r -> r
+                        .path("/api/customer/registration/**")
+                        .filters(f -> f
+                                .stripPrefix(1)
+                                .filter(jwtAuthenticationFilter.apply(new JwtAuthenticationFilter.Config())))
+                        .uri("http://54.251.178.246:8080"))
                 .build();
     }
 }
